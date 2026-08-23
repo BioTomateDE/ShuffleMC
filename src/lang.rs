@@ -32,6 +32,9 @@ fn shuffle_language(langmap: &mut HashMap<String, String>, rng: &mut crate::MyRn
     // Group language strings (keys) by placeholder count.
     let mut groups: [Vec<String>; PLACEHOLDER_LIMIT] = core::array::from_fn(|_| Vec::new());
 
+    // You could also group by text length and/or whether it contains newlines.
+    // Newlines are usually displayed as a box with "LF" written inside in-game.
+
     for (key, string) in langmap.iter() {
         if key.starts_with("translation.test") {
             // these contain invalid placeholders on purpose

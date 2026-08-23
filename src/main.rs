@@ -2,8 +2,8 @@ use clap::Parser;
 use rand::{Rng, SeedableRng, rngs::Xoshiro256PlusPlus};
 use std::path::{Path, PathBuf};
 
+mod json;
 mod lang;
-mod mcmeta;
 mod texture;
 mod util;
 
@@ -38,8 +38,8 @@ fn main() {
         cli_panic!("Resource pack directory does not exist: {}", cli.path.display());
     }
 
-    let mcmeta_path = cli.path.join("pack.mcmeta");
-    if !mcmeta_path.is_file() {
+    let meta_file = cli.path.join("pack.mcmeta");
+    if !meta_file.is_file() {
         cli_panic!("Directory is not a resource pack: pack.mcmeta file missing");
     }
 
@@ -47,18 +47,20 @@ fn main() {
     let lang_dir: PathBuf = join_dir(&assets_dir, "lang");
     let textures_dir: PathBuf = join_dir(&assets_dir, "textures");
     let item_dir: PathBuf = join_dir(&textures_dir, "item");
+    let block_dir: PathBuf = join_dir(&textures_dir, "block");
 
     let seed: u64 = cli.seed.unwrap_or_else(|| rand::rng().next_u64());
     let rng = &mut Xoshiro256PlusPlus::seed_from_u64(seed);
 
     lang::shuffle_languages(&lang_dir, rng);
-    texture::shuffle_items(&item_dir, rng);
+    texture::item::shuffle_items(&item_dir, rng);
+    texture::block::shuffle_blocks(&block_dir, rng);
 
     if !cli.keep_meta {
-        let mut mcmeta: mcmeta::McMeta = util::read_json_file(&mcmeta_path);
-        mcmeta.pack.description = util::rainbow_text("Resource Randomizer");
-        mcmeta.pack.description += "§r\nMade by §u§dBioTomateDE";
-        util::write_json_file(&mcmeta_path, &mcmeta);
+        let mut meta: json::packmeta::PackMeta = util::read_json_file(&meta_file);
+        meta.pack.description = util::rainbow_text("Resource Randomizer");
+        meta.pack.description += "§r\nMade by §u§dBioTomateDE";
+        util::write_json_file(&meta_file, &meta);
     }
 
     println!("Resources shuffled with seed {seed}!");

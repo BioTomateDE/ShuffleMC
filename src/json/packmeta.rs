@@ -1,4 +1,4 @@
-//! Struct to represent the JSON `pack.mcmeta` files.
+//! Structs to represent the JSON `pack.mcmeta` file.
 //!
 //! Information taken from <https://minecraft.wiki/w/Pack.mcmeta>
 
@@ -7,7 +7,7 @@ use std::collections::HashMap;
 
 /// A `pack.mcmeta` file.
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct McMeta {
+pub struct PackMeta {
     /// Holds the pack information.
     pub pack: Pack,
 
