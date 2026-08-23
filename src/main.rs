@@ -1,0 +1,65 @@
+use clap::Parser;
+use rand::{Rng, SeedableRng, rngs::Xoshiro256PlusPlus};
+use std::path::{Path, PathBuf};
+
+mod lang;
+mod mcmeta;
+mod texture;
+mod util;
+
+pub type MyRng = Xoshiro256PlusPlus;
+
+#[derive(Debug, Parser)]
+#[command(version, about)]
+pub struct Cli {
+    /// Path to resource pack
+    path: PathBuf,
+
+    /// Do not replace resource pack description
+    #[arg(long)]
+    keep_meta: bool,
+
+    /// Optional seed for random number generation
+    #[arg(long)]
+    seed: Option<u64>,
+}
+
+fn join_dir(base: &Path, path: &str) -> PathBuf {
+    let joined: PathBuf = base.join(path);
+    if !joined.is_dir() {
+        cli_panic!("Incomplete resource pack: `{path}` directory missing");
+    }
+    joined
+}
+
+fn main() {
+    let cli = Cli::parse();
+    if !cli.path.is_dir() {
+        cli_panic!("Resource pack directory does not exist: {}", cli.path.display());
+    }
+
+    let mcmeta_path = cli.path.join("pack.mcmeta");
+    if !mcmeta_path.is_file() {
+        cli_panic!("Directory is not a resource pack: pack.mcmeta file missing");
+    }
+
+    let assets_dir: PathBuf = join_dir(&cli.path, "assets/minecraft");
+    let lang_dir: PathBuf = join_dir(&assets_dir, "lang");
+    let textures_dir: PathBuf = join_dir(&assets_dir, "textures");
+    let item_dir: PathBuf = join_dir(&textures_dir, "item");
+
+    let seed: u64 = cli.seed.unwrap_or_else(|| rand::rng().next_u64());
+    let rng = &mut Xoshiro256PlusPlus::seed_from_u64(seed);
+
+    lang::shuffle_languages(&lang_dir, rng);
+    texture::shuffle_items(&item_dir, rng);
+
+    if !cli.keep_meta {
+        let mut mcmeta: mcmeta::McMeta = util::read_json_file(&mcmeta_path);
+        mcmeta.pack.description = util::rainbow_text("Resource Randomizer");
+        mcmeta.pack.description += "§r\nMade by §u§dBioTomateDE";
+        util::write_json_file(&mcmeta_path, &mcmeta);
+    }
+
+    println!("Resources shuffled with seed {seed}!");
+}
