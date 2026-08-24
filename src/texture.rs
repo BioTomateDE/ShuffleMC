@@ -3,6 +3,7 @@ use rand::seq::SliceRandom;
 use std::path::PathBuf;
 
 pub mod block;
+pub mod particle;
 pub mod item;
 
 fn shuffle_files(mut source_files: Vec<PathBuf>, rng: &mut crate::MyRng) {

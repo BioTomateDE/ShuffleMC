@@ -45,6 +45,7 @@ pub fn shuffle_blocks(block_dir: &Path, rng: &mut crate::MyRng) {
         }
     }
 
+    super::shuffle_files(opaque_blocks, rng);
     super::shuffle_files(transparent_blocks, rng);
 }
 

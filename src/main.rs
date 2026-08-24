@@ -45,6 +45,7 @@ fn main() {
 
     let assets_dir: PathBuf = join_dir(&cli.path, "assets/minecraft");
     let lang_dir: PathBuf = join_dir(&assets_dir, "lang");
+    let particles_dir: PathBuf = join_dir(&assets_dir, "particles");
     let textures_dir: PathBuf = join_dir(&assets_dir, "textures");
     let item_dir: PathBuf = join_dir(&textures_dir, "item");
     let block_dir: PathBuf = join_dir(&textures_dir, "block");
@@ -55,6 +56,7 @@ fn main() {
     lang::shuffle_languages(&lang_dir, rng);
     texture::item::shuffle_items(&item_dir, rng);
     texture::block::shuffle_blocks(&block_dir, rng);
+    texture::particle::shuffle_particles(&particles_dir, rng);
 
     if !cli.keep_meta {
         let mut meta: json::packmeta::PackMeta = util::read_json_file(&meta_file);
