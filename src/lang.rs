@@ -1,8 +1,8 @@
-//! Languages.
+//! Language/Localization files.
 
 use crate::{
     cli_panic,
-    util::{listdir_files, read_json_file, write_json_file},
+    fs::{listdir_files, read_json_file, write_json_file},
 };
 use rand::seq::SliceRandom;
 use std::{collections::HashMap, path::Path};

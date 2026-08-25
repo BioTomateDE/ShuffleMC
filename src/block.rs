@@ -7,9 +7,7 @@ use std::{
 use png::{BitDepth, ColorType};
 
 use crate::{
-    cli_panic,
-    json::texture::TextureProperties,
-    util::{listdir_files, read_json_file},
+    cli_panic, fs::{listdir_files, read_json_file, shuffle_files}, json::texture::TextureProperties,
 };
 
 type PngReader = png::Reader<BufReader<File>>;
@@ -45,8 +43,8 @@ pub fn shuffle_blocks(block_dir: &Path, rng: &mut crate::MyRng) {
         }
     }
 
-    super::shuffle_files(opaque_blocks, rng);
-    super::shuffle_files(transparent_blocks, rng);
+    shuffle_files(&opaque_blocks, rng);
+    shuffle_files(&transparent_blocks, rng);
 }
 
 fn open_png(path: &Path) -> PngReader {
