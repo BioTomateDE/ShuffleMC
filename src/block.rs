@@ -1,14 +1,14 @@
-use std::{
-    fs::File,
-    io::BufReader,
-    path::{Path, PathBuf},
-};
-
-use png::{BitDepth, ColorType};
-
-use crate::{
-    cli_panic, fs::{listdir_files, read_json_file, shuffle_files}, json::texture::TextureProperties,
-};
+use crate::cli_panic;
+use crate::fs::listdir_files;
+use crate::fs::read_json_file;
+use crate::fs::shuffle_files;
+use crate::json::texture::TextureProperties;
+use png::BitDepth;
+use png::ColorType;
+use std::fs::File;
+use std::io::BufReader;
+use std::path::Path;
+use std::path::PathBuf;
 
 type PngReader = png::Reader<BufReader<File>>;
 
@@ -48,12 +48,11 @@ pub fn shuffle_blocks(block_dir: &Path, rng: &mut crate::MyRng) {
 }
 
 fn open_png(path: &Path) -> PngReader {
-    let file = File::open(path)
-        .unwrap_or_else(|e| cli_panic!("Could not open file `{}`: {e}", path.display()));
+    let file = File::open(path).unwrap_or_else(|e| cli_panic!("Could not open file `{}`: {e}", path.display()));
     let decoder = png::Decoder::new(BufReader::new(file));
-    decoder.read_info().unwrap_or_else(|e| {
-        cli_panic!("Could not read PNG metadata for file `{}`: {e}", path.display())
-    })
+    decoder
+        .read_info()
+        .unwrap_or_else(|e| cli_panic!("Could not read PNG metadata for file `{}`: {e}", path.display()))
 }
 
 // ai slop warning
@@ -78,7 +77,9 @@ fn png_has_transparency(mut reader: PngReader) -> bool {
     let bit_depth = info.bit_depth;
 
     loop {
-        let row = reader.next_row().unwrap_or_else(|e| cli_panic!("Could not read PNG row: {e}"));
+        let row = reader
+            .next_row()
+            .unwrap_or_else(|e| cli_panic!("Could not read PNG row: {e}"));
         let Some(row) = row else { return false };
         let data = row.data();
         match bit_depth {

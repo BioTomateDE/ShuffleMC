@@ -2,7 +2,8 @@
 //!
 //! Information taken from <https://minecraft.wiki/w/Pack.mcmeta>
 
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde::Serialize;
 use std::collections::HashMap;
 
 /// A `pack.mcmeta` file.

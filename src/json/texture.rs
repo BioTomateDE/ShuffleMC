@@ -2,7 +2,10 @@
 //!
 //! Information taken from <https://minecraft.wiki/w/Resource_pack#Texture_animation>
 
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde::Deserialize;
+use serde::Deserializer;
+use serde::Serialize;
+use serde::Serializer;
 
 /// A texture animation `*.png.mcmeta` file.
 ///
@@ -102,7 +105,10 @@ impl<'de> Deserialize<'de> for Frame {
 
         match FrameRepr::deserialize(deserializer)? {
             FrameRepr::Simple(index) => Ok(Frame { index, time: None }),
-            FrameRepr::Full { index, time } => Ok(Frame { index, time: Some(time) }),
+            FrameRepr::Full { index, time } => Ok(Frame {
+                index,
+                time: Some(time),
+            }),
         }
     }
 }

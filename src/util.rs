@@ -1,8 +1,9 @@
 #[macro_export]
 macro_rules! cli_panic {
-    ($($arg:tt)*) => {
-        <$crate::Cli as ::clap::CommandFactory>::command().error(::clap::error::ErrorKind::ValueValidation, format!($($arg)*)).exit()
-    };
+    ($($arg:tt)*) => {{
+        eprintln!("\x1B[31;1mError:\x1B[22m {}\x1B[0m", format_args!($($arg)*));
+        std::process::exit(1);
+    }};
 }
 
 pub fn rainbow_text(text: &str) -> String {

@@ -1,11 +1,12 @@
 //! Language/Localization files.
 
-use crate::{
-    cli_panic,
-    fs::{listdir_files, read_json_file, write_json_file},
-};
+use crate::cli_panic;
+use crate::fs::listdir_files;
+use crate::fs::read_json_file;
+use crate::fs::write_json_file;
 use rand::seq::SliceRandom;
-use std::{collections::HashMap, path::Path};
+use std::collections::HashMap;
+use std::path::Path;
 
 pub fn shuffle_languages(lang_dir: &Path, rng: &mut crate::MyRng) {
     for path in listdir_files(lang_dir, "json") {
@@ -42,9 +43,7 @@ fn shuffle_language(langmap: &mut HashMap<String, String>, rng: &mut crate::MyRn
         }
         let placeholder_count = get_placeholder_count(string);
         let Some(langvec) = groups.get_mut(placeholder_count) else {
-            cli_panic!(
-                "Placeholder count {placeholder_count} exceeds my limit {PLACEHOLDER_LIMIT}"
-            );
+            cli_panic!("Placeholder count {placeholder_count} exceeds my limit {PLACEHOLDER_LIMIT}");
         };
         langvec.push(key.clone());
     }
@@ -89,8 +88,7 @@ fn get_placeholder_count(mut string: &str) -> usize {
             cli_panic!("Expected number after '%', found {string:?}");
         }
         let number_str = &string[..number_end];
-        let Some(number) = number_str.parse::<usize>().ok().filter(|&n| i32::try_from(n).is_ok())
-        else {
+        let Some(number) = number_str.parse::<usize>().ok().filter(|&n| i32::try_from(n).is_ok()) else {
             cli_panic!("String formatting positional placeholder {number_str} is too high")
         };
         string = &string[number_end..];
